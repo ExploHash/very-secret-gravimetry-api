@@ -1,0 +1,12 @@
+version: '3.7'
+services:
+  database: 
+    image: mcr.microsoft.com/azure-sql-edge:latest
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Start1234%
+      - MSSQL_DB=test
+      - MSSQL_USER=SA
+      - MSSQL_PASSWORD=Start1234%
+    ports:
+      - 1433:1433
