@@ -1,10 +1,9 @@
 // using gravimetry_api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authorization;
 using gravimetry_api.Data;
-using gravimetry_api.ViewModels;
-using System.Text.RegularExpressions;
+using gravimetry_api.Models;
+using gravimetry_api.Classes;
 
 namespace gravimetry_api.Controllers
 {
@@ -12,15 +11,15 @@ namespace gravimetry_api.Controllers
   {
     //Managers which can be used to access the database
     private readonly ApplicationDbContext _context;
-    private readonly UserManager<IdentityUser> userManager;
-    private readonly SignInManager<IdentityUser> signInManager;
+    private readonly UserManager<ApplicationUser> userManager;
+    private readonly SignInManager<ApplicationUser> signInManager;
     private readonly RoleManager<IdentityRole> roleManager;
 
 
     public UsersController(//Initialize these managers
         ApplicationDbContext context,
-        UserManager<IdentityUser> userManager,
-        SignInManager<IdentityUser> signInManager,
+        UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager,
         RoleManager<IdentityRole> roleManager)
     {
       _context = context;
@@ -30,12 +29,12 @@ namespace gravimetry_api.Controllers
     }
 
     [HttpPost]
-    public async Task<IActionResult> Register(RegisterUserViewModel model)
+    public async Task<IActionResult> Register([FromBody] RegisterInputModel model)
     {
       if (ModelState.IsValid)
       {
         //Create a user object
-        IdentityUser user = new IdentityUser
+        ApplicationUser user = new ApplicationUser
         {
           UserName = model.Name,
           Email = model.Email,
@@ -49,35 +48,26 @@ namespace gravimetry_api.Controllers
           //If succeeded log the just creates user in and redirect to home
           await signInManager.SignInAsync(user, isPersistent: false);
           return Ok(user);
+        }else{
+          ApiError error = new ApiError(result.Errors.Select(x => x.Description).ToArray());
+          Console.WriteLine("HEllo?");
+          return BadRequest(error);
         }
-
-        //If errors show them
-        foreach (var error in result.Errors)
-        {
-          ModelState.AddModelError("", error.Description);
-        }
-
-        return Ok(user);
+      }else{
+        ApiError error = new ApiError(ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToArray());
+        return BadRequest(error);
       }
-
-      return StatusCode(400);
     }
 
     public async Task<IActionResult> Logout()
     {
       //User signinmanager to sign out the currently logged in user
       await signInManager.SignOutAsync();
-      return RedirectToAction("index", "home");
-    }
-
-    [HttpGet]
-    public IActionResult Login()
-    {
-      return View();
+      return Ok();
     }
 
     [HttpPost]
-    public async Task<IActionResult> Login(LoginViewModel model)
+    public async Task<IActionResult> Login([FromBody] LoginInputModel model)
     {
       if (ModelState.IsValid)
       {
@@ -91,18 +81,12 @@ namespace gravimetry_api.Controllers
             );
 
         if (result.Succeeded)
-          return RedirectToAction("Index", "Home");
+          return Ok();
 
         ModelState.AddModelError("", "Login failed.");
       }
 
-      return View(model);
-    }
-
-    [HttpGet, Authorize(Roles = "Manager")] //Only allow a person with managerrole to access this andpoint
-    public String ManagerExample()
-    {
-      return "Hello there, general " + User.Identity.Name;
+      return BadRequest(new ApiError(ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToArray()));
     }
   }
 }

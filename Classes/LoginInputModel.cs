@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace gravimetry_api.ViewModels
+namespace gravimetry_api.Classes
 {
-    public class LoginViewModel
+    public class LoginInputModel
     {
         [Required]
         public string Name { get; set; }
