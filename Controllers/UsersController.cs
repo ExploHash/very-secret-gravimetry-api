@@ -88,5 +88,12 @@ namespace gravimetry_api.Controllers
 
       return BadRequest(new ApiError(ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToArray()));
     }
+
+    [HttpGet]
+    public async Task<List<Team>> Teams(){
+      //Grab user
+      ApplicationUser user = await userManager.GetUserAsync(HttpContext.User);
+      return user.Teams;
+    }
   }
 }
