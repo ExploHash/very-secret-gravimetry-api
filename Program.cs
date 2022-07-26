@@ -29,6 +29,9 @@ using (var scope = app.Services.CreateScope())
     SeedData.Initialize(services);
 }
 
+//Call identity seeder
+SeedIdentityData.Seed(app.Services, app.Configuration);
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
