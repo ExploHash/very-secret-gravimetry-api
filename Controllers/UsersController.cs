@@ -1,6 +1,8 @@
 // using gravimetry_api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
 using gravimetry_api.Data;
 using gravimetry_api.Models;
 using gravimetry_api.Classes;
@@ -94,6 +96,46 @@ namespace gravimetry_api.Controllers
       //Grab user
       ApplicationUser user = await userManager.GetUserAsync(HttpContext.User);
       return user.Teams;
+    }
+
+    [HttpDelete]
+    [Route("/Users/Teams/{id}")]
+    public async Task<IActionResult> LeaveTeam(int id){
+      //Grab user
+      ApplicationUser user = await userManager.GetUserAsync(HttpContext.User);
+      //Grab team
+      Team? team = user.Teams.Find(team => team.Id == id);
+
+      if(team == null){
+        return NotFound();
+      }
+
+      //Remove user from team
+      team.ApplicationUsers.Remove(user);
+      //Save changes
+      _context.SaveChanges();
+      return Ok();
+    }
+
+    [HttpPut]
+    [Route("/Users/Teams/{id}")]
+    public async Task<IActionResult> JoinTeam(int id){
+      Team? team = await _context.Team
+        .Where(t => t.Id == id)
+        .Where(t => t.IsPublic)
+        .FirstOrDefaultAsync();
+
+      if(team == null){
+        return NotFound();
+      }
+
+      //Grab user
+      ApplicationUser user = await userManager.GetUserAsync(HttpContext.User);
+      //Add team to user
+      user.Teams.Add(team);
+      //Save changes
+      _context.SaveChanges();
+      return Ok();
     }
   }
 }
