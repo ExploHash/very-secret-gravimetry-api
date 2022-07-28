@@ -14,9 +14,20 @@ namespace gravimetry_api.Services
               DbContextOptions<ApplicationDbContext>>()))
       {
 
-        if (context.ApplicationUser.Any()) return;
+        if (context.SiteMonitor.Any()) return;
 
-        //add stuff
+        context.Team.AddRange(
+            new Team {
+              Name = "MonitorTeam",
+              IsPublic = true,
+              SiteMonitors = new List<SiteMonitor>{
+                new SiteMonitor{
+                  Instance = "MonitorInstance",
+                  Job = "MonitorJob"
+                },
+              }
+            }
+        );
 
         context.SaveChanges();
       }

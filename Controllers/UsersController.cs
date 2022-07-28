@@ -98,6 +98,23 @@ namespace gravimetry_api.Controllers
       return user.Teams;
     }
 
+    [HttpGet]
+    public async Task<List<SiteMonitor>> Monitors(string search = ""){
+      //Grab user
+      ApplicationUser user = await userManager.GetUserAsync(HttpContext.User);
+      List<int> teamsIds = user.Teams.Select(x => x.Id).ToList();
+
+      List<SiteMonitor>? monitors = await _context.SiteMonitor
+        .Where(sitemonitor => sitemonitor.Teams.Any(team => teamsIds.Contains(team.Id)))
+        .Where(siteMonitor => search == null || search.Length == 0 || (siteMonitor.Instance.Contains(search) || siteMonitor.Job.Contains(search)))
+        .ToListAsync();
+
+      if(monitors == null)
+        return new List<SiteMonitor>();
+
+      return monitors;
+    }
+
     [HttpDelete]
     [Route("/Users/Teams/{id}")]
     public async Task<IActionResult> LeaveTeam(int id){

@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace gravimetry_api.Models
 {
   public class SiteMonitor
@@ -8,6 +10,7 @@ namespace gravimetry_api.Models
 
     public string Job { get; set; }
     
+    [JsonIgnore]
     public virtual List<Team> Teams { get; set; }
 
     public virtual List<Client> Clients { get; set; }

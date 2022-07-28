@@ -12,6 +12,7 @@ namespace gravimetry_api.Models
 
     public virtual List<Client> Clients { get; set; }
 
+    [JsonIgnore]
     public virtual List<SiteMonitor> SiteMonitors { get; set; }
 
     [JsonIgnore]
