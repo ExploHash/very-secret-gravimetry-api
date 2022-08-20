@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 namespace gravimetry_api.Models
 {
   public class UptimeMetric
@@ -7,7 +8,7 @@ namespace gravimetry_api.Models
     public DateTime Date { get; set; }
 
     public int Value { get; set; }
-
+    [JsonIgnore]
     public virtual SiteMonitor SiteMonitor { get; set; }
   }
 }

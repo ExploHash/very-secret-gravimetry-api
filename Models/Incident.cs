@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace gravimetry_api.Models
 {
   public class Incident
@@ -6,12 +8,13 @@ namespace gravimetry_api.Models
 
     public DateTime Start { get; set; }
 
-    public DateTime End { get; set; }
+    public DateTime? End { get; set; }
 
     public bool IsResolved { get; set; } = false;
     
+    [JsonIgnore]
     public virtual SiteMonitor SiteMonitor { get; set; }
-
+  [JsonIgnore]
     public virtual List<IncidentNote> IncidentNotes { get; set; }
   }
 }
