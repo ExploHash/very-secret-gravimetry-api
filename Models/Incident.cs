@@ -14,7 +14,7 @@ namespace gravimetry_api.Models
     
     [JsonIgnore]
     public virtual SiteMonitor SiteMonitor { get; set; }
-  [JsonIgnore]
+    [JsonIgnore]
     public virtual List<IncidentNote> IncidentNotes { get; set; }
   }
 }
