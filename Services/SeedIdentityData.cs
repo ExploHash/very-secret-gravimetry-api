@@ -15,25 +15,25 @@ namespace gravimetry_api.Services
       RoleManager<IdentityRole> roleManager =
           serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-      if (!userManager.Users.Any(u => u.UserName == "teams")){//only if not exists
+      if (!userManager.Users.Any(u => u.UserName == "jimmy")){//only if not exists
         //Initialize a user with two teams
         ApplicationUser user = new ApplicationUser();
-        user.UserName = "teams";
-        user.Email = "teams@gmail.com";
+        user.UserName = "jimmy";
+        user.Email = "jimmy@gmail.com";
         user.EmailConfirmed = true;
-        user.Teams = new List<Team>
-        {
-          new Team
-          {
-            Name = "Team 1",
-            IsPublic = true
-          },
-          new Team
-          {
-            Name = "Team 2",
-            IsPublic = false
-          }
-        };
+        user.Teams = new List<Team>();
+
+        //Create the user in the database
+        userManager.CreateAsync(user, "Start1234%").Wait();
+      }
+
+            if (!userManager.Users.Any(u => u.UserName == "roel")){//only if not exists
+        //Initialize a user with two teams
+        ApplicationUser user = new ApplicationUser();
+        user.UserName = "roel";
+        user.Email = "roel@gmail.com";
+        user.EmailConfirmed = true;
+        user.Teams = new List<Team>();
 
         //Create the user in the database
         userManager.CreateAsync(user, "Start1234%").Wait();
