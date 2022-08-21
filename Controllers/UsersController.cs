@@ -163,7 +163,7 @@ namespace gravimetry_api.Controllers
       List<int> teamsIds = user.Teams.Select(x => x.Id).ToList();
 
       List<Incident>? incidents = await _context.Incident
-        .Where(incident => incident.SiteMonitor.Teams.Any(team => teamsIds.Contains(team.Id)) || incident.SiteMonitor.Teams.Any(team => team.IsPublic))
+        .Where(incident => incident.SiteMonitor.Teams.Any(team => teamsIds.Contains(team.Id)))
         .Where(incident => !incident.IsResolved)
         .ToListAsync();
 
@@ -174,6 +174,12 @@ namespace gravimetry_api.Controllers
       List<IncidentFull> fullIncidents = incidents.Select(incident => new IncidentFull(incident)).ToList();
 
       return fullIncidents;
+    }
+
+    [HttpGet]
+    [Route("/Users")]
+    public async Task<List<ApplicationUser>> GetUsers(){
+      return await _context.Users.ToListAsync();
     }
   }
 }

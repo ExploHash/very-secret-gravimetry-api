@@ -28,5 +28,11 @@ namespace gravimetry_api.Controllers
     public async Task<SiteMonitor> Index(int Id){
       return await _context.SiteMonitor.FindAsync(Id);
     }
+
+    [HttpGet]
+    [Route("Monitor")]
+    public async Task<List<SiteMonitor>> Index(){
+      return await _context.SiteMonitor.ToListAsync();
+    }
   }
 }
